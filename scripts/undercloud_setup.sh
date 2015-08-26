@@ -49,7 +49,7 @@ $bg "cp /usr/share/instack-undercloud/undercloud.conf.sample ~/undercloud.conf"
 echo $bg "sed -i \"s/192\.0\.2\./${prov_network}/g\" undercloud.conf"
 $bg "sed -i \"s/192\.0\.2\./${prov_network}/g\" undercloud.conf"
 echo "Uncommenting lines"
-for val in $(echo local_ip undercloud_public_vip undercloud_admin_vip masquerade_network dhcp_start dhcp_end network_cider network_gateway discovery_iprange) ; do
+for val in $(echo local_ip network_cidr undercloud_public_vip undercloud_admin_vip masquerade_network dhcp_start dhcp_end network_cider network_gateway discovery_iprange) ; do
   echo "Fixing ${val}"
   echo $bg "sed -i \"s/^#${val}/${val}/g\" ~/undercloud.conf"
   $bg "sed -i \"s/^#${val}/${val}/g\" ~/undercloud.conf"
