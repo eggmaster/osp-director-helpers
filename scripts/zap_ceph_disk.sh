@@ -11,7 +11,6 @@ DEV=$1
 while [ "${DEV}" != "" ] ; do
   echo "On ${DEV}"
   ceph-disk zap ${DEV}
-  dd if=/dev/zero of=${DEV} bs=50M count=1
   partprobe ${DEV}
   shift
   DEV=$1
