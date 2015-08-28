@@ -1,0 +1,43 @@
+heat_template_version: 2013-05-23
+
+description: >
+ 'Autoscaling Example for Intel'
+
+parameters:
+  public_network:
+    type: string
+    default: public
+    description: floating ip pool name
+  private_network:
+    type: string
+    default: admin-private
+    description: name or id of the private (VXLAN) private_network
+  security_group:
+    type: string
+    default: "simple_security_group"
+    description: name of a security group
+
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      flavor: m1.tiny
+      networks: [{ "network": { get_param: private_network } }]
+      image: cirros
+      user_data_format: RAW
+      security_groups: [ { get_param: security_group } ]
+      user_data: |
+        #!/bin/sh
+        while [ 1 ] ; do echo $((13**99)) 1>/dev/null 2>&1; done
+
+  floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: { get_param: public_network }
+
+  floating_ip_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip }
+      server_id: { get_resource: server }
+
