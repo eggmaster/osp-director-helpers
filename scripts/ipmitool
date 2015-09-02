@@ -1,0 +1,50 @@
+#!/bin/bash
+
+echo $0 $* | logger -t "-IBMBLADE-"
+
+ADDRESS=""
+LOGIN=""
+PASSWORD=""
+VERBOSE=false
+OPERATION="status"
+NODE=""
+COMMUNITY="private"
+SLOT=""
+while getopts ":I:H:L:U:B:b:T:t:R:N:f:" opt; do
+  case $opt in
+    I) ;;
+    H)
+      ADDRESS=$OPTARG
+      ;;
+    L) ;;
+    U)
+      LOGIN=$OPTARG
+      ;;
+    B|b)
+      SLOT=$OPTARG
+      ;;
+    T|t)
+      SLOT=$OPTARG
+      ;;
+    R) ;;
+    N) ;;
+    f)
+      PASSWORD=$(cat $OPTARG)
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+command="$*"
+if [ "${command}" == "power status" ] ; then
+  OPERATION="status"
+elif [ "${command}" == "power off" ] ; then
+  OPERATION="off"
+elif [ "${command}" == "power on" ] ; then
+  OPERATION="on"
+fi
+echo "ALL: $(id) $*" | logger -t "-IBMBLADE-"
+echo FENCE_COMMAND: fence_ibmblade -a ${ADDRESS} -l ${LOGIN} -p ${PASSWORD} -o ${OPERATION} -n ${SLOT} -c ${COMMUNITY} -d 3 | logger -t "-IBMBLADE-"
+status=$(fence_ibmblade -a ${ADDRESS} -l ${LOGIN} -p '${PASSWORD}' -o ${OPERATION} -n ${SLOT} -c ${COMMUNITY} -d 3 | awk '{ print $NF }' | tr '[:upper:]' '[:lower:]')
+echo Chassis Power is ${status}
+# Chassis Power is on
+# Chassis Power is off
