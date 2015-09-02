@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#
+# Awful hack to workaround lack of IPMI support in older IBM xSeries blades
+# wraps fence_ibmblade around this ipmitool script
+# NOTE: this only does power mapping, so IPMI inventory or console mapping
+# NOTE: fence-agents package is required for this to function
+#       yum install -y fence-agents
+#
+
 echo $0 $* | logger -t "-IBMBLADE-"
 
 ADDRESS=""
