@@ -10,7 +10,6 @@ hostname=CHANGEME
 
 echo "Setting up 'stack' user"
 useradd stack
-echo "Redhat1!" | passwd stack --stdin
 echo "stack ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/stack
 chmod 0440 /etc/sudoers.d/stack
 su - stack -c "mkdir -p images templates"
