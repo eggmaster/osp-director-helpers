@@ -1,0 +1,48 @@
+heat_template_version: 2013-05-23
+
+description: >
+ 'Plumb a Fresh Tenant'
+
+parameters:
+  floating_network:
+    description: "Name of the external network"
+    type: string
+    default: "public"
+  network_cidr:
+    description: "CIDR of the web subnet"
+    type: "string"
+    default: "192.168.0.0/24"
+
+resources:
+  web_network:
+    type: OS::Neutron::Net
+    properties:
+      name: web-network
+      shared: false
+
+  web_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      cidr: { get_param: network_cidr }
+      enable_dhcp: true
+      ip_version: 4
+      name: web-subnet
+      network_id: { get_resource: web_network }
+
+  public_router:
+    type: OS::Neutron::Router
+    properties:
+      name: { get_param: "OS::stack_name" }
+
+  public_gateway:
+    type: OS::Neutron::RouterGateway
+    properties:
+      network: { get_param: floating_network }
+      router_id: { get_resource: public_router }
+
+  public_web_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: public_router }
+      subnet_id: { get_resource: web_subnet }
+
