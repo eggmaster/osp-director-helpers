@@ -1,0 +1,23 @@
+heat_template_version: 2014-10-16
+
+description: >
+ Install sahara services on controllers
+
+parameters:
+ servers:
+  type: json
+
+resources:
+
+ ExtraConfig:
+  type: OS::Heat::SoftwareConfig
+  properties:
+   group: script
+   config: {get_file: /home/stack/templates/sahara-install.py}
+
+ ExtraDeployments:
+  type: OS::Heat::SoftwareDeployments
+  properties:
+   servers: {get_param: servers}
+   config: {get_resource: ExtraConfig}
+   actions: ['CREATE', 'UPDATE']
