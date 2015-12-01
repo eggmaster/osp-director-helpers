@@ -8,8 +8,8 @@ def install_sahara():
  sahara_ip = "192.168.1.10"
 
  subprocess.call(["yum", "-y", "install", "openstack-sahara-api", "openstack-sahara-engine"])
- subprocess.call(["mysql", "-u", "root","-e","create database sahara; grant all on sahara.* to 'sahara'@'%' identified by 'sahara';grant all on sahara.* to 'sahara'@'sahara_ip' identified by 'sahara';"])
- subprocess.call(["openstack-config", "--set", "/etc/sahara/sahara.conf", "database", "connection", "mysql://sahara:sahara@sahara_ip/sahara"])
+ subprocess.call(["mysql", "-u", "root","-e","create database sahara; grant all on sahara.* to 'sahara'@'%' identified by 'sahara';grant all on sahara.* to 'sahara'@'"+sahara_ip+"' identified by 'sahara';"])
+ subprocess.call(["openstack-config", "--set", "/etc/sahara/sahara.conf", "database", "connection", "mysql://sahara:sahara@"+sahara_ip+"/sahara"])
  subprocess.call(["sahara-db-manage", "--config-file", "/etc/sahara/sahara.conf", "upgrade", "head"])
  subprocess.call(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "auth_uri", "http://"+sahara_ip+":5000/v2.0/"])
  subprocess.call(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "identity_uri", "http://"+sahara_ip+":35357"])
