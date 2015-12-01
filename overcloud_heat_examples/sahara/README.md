@@ -14,7 +14,9 @@ Instructions:
 2) Place all files in your local templates directory (ie /home/stack/templates) 
 3) Update the following template files to use the correct IP for your service
 	- sahara-install.py: update the "sahara_ip" variable
-	- sahara-prep-script.sh: replace 127.0.0.1 if wanted, 127.0.0.1 has tested successfully. 
+	- sahara-prep-script.sh: replace 127.0.0.1 if wanted, 127.0.0.1 has tested successfully. ( to verify correct enpoints issue the following from the stack@undercloud:
+	   source ~/overcloudrc
+           keystone endpoint-list
 4) source overcloudrc and execute 'sahara-prep-script.sh'
 5) Execute openstack overcloud deploy ... with the new templates added via -e /home/stack/templates/sahara-post-deploy.yaml
 
