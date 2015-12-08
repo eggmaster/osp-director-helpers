@@ -6,11 +6,22 @@ import socket
 def install_sahara():
  sahara_pass = "sahara"
  sahara_ip = "192.168.1.10"
-
  print cmd(["yum", "-y", "install", "openstack-sahara-api", "openstack-sahara-engine"])
- print cmd(["mysql", "-u", "root","-e","create database sahara; grant all on sahara.* to 'sahara'@'%' identified by 'sahara';grant all on sahara.* to 'sahara'@'"+sahara_ip+"' identified by 'sahara';"])
+
+ database_created = False
+ try:
+  print cmd(["mysql", "-u", "root","-e","create database sahara; grant all on sahara.* to 'sahara'@'%' identified by 'sahara';grant all on sahara.* to 'sahara'@'"+sahara_ip+"' identified by 'sahara';"])
+  database_created = True
+ except:
+  print "Database already created!"
+
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "database", "connection", "mysql://sahara:sahara@"+sahara_ip+"/sahara"])
- print cmd(["sahara-db-manage", "--config-file", "/etc/sahara/sahara.conf", "upgrade", "head"])
+
+ #We only want to run sahara-db-manage if the mysql database was created during the current run.
+ #Otherwise we assume this script has already been run and we don't want to blow away the db.
+ if database_created:
+  print cmd(["sahara-db-manage", "--config-file", "/etc/sahara/sahara.conf", "upgrade", "head"])
+
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "auth_uri", "http://"+sahara_ip+":5000/v2.0/"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "identity_uri", "http://"+sahara_ip+":35357"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "admin_tenant_name", "service"])
