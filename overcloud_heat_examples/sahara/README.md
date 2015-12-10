@@ -11,7 +11,7 @@ Requirements:
 Instructions:
 
 1) Deploy your overcloud
-2) Place all files in your local templates directory (ie /home/stack/templates) 
+2) Place all files in your local templates directory (/home/stack/templates NOTE: this is hardcoded in some of the scripts so you will have to adjust if you use an alternate location)
 3) Update the following template files to use the correct IP for your service
 	- sahara-install.py: update the "sahara_ip" variable
 	- sahara-prep-script.sh: replace 127.0.0.1 if wanted, 127.0.0.1 has tested successfully. ( to verify correct enpoints issue the following from the stack@undercloud:
@@ -23,4 +23,3 @@ Instructions:
 This update should only take a few moments.
 
 Once completed, verify you are able to view sahara resources in horizon.
-
