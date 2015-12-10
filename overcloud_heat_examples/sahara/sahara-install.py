@@ -48,11 +48,11 @@ def install_sahara():
   proxy_conf = open(haproxy_cfg_file,"a")
   proxy_conf.write("\n\n")
   proxy_conf.write("listen sahara\n")
-  proxy_conf.write("  bind %s:8777\n" % sahara_internal_vip)
-  proxy_conf.write("  bind %s:8777\n" % sahara_external_vip)
-  proxy_conf.write("  server overcloud-controller-0 %s:8777 check fall 5 inter 2000 rise 2\n" % controller_0_ip)
-  proxy_conf.write("  server overcloud-controller-1 %s:8777 check fall 5 inter 2000 rise 2\n" % controller_1_ip)
-  proxy_conf.write("  server overcloud-controller-2 %s:8777 check fall 5 inter 2000 rise 2\n" % controller_2_ip)
+  proxy_conf.write("  bind %s:8386\n" % sahara_internal_vip)
+  proxy_conf.write("  bind %s:8386\n" % sahara_external_vip)
+  proxy_conf.write("  server overcloud-controller-0 %s:8386 check fall 5 inter 2000 rise 2\n" % controller_0_ip)
+  proxy_conf.write("  server overcloud-controller-1 %s:8386 check fall 5 inter 2000 rise 2\n" % controller_1_ip)
+  proxy_conf.write("  server overcloud-controller-2 %s:8386 check fall 5 inter 2000 rise 2\n" % controller_2_ip)
   proxy_conf.close()
  else:
   print "INFO: Not adjusting haproxy.cfg since it appears to have the sahara config already"
