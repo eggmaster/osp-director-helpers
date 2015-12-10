@@ -33,6 +33,7 @@ def install_sahara():
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "admin_tenant_name", "service"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "admin_user", "sahara"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "keystone_authtoken", "admin_password", "sahara"])
+ print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "plugins", "hdp,cdh,vanilla"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "use_neutron", "true"])
 
 #test to see if haproxy.cfg has already been adjusted
@@ -57,13 +58,21 @@ def install_sahara():
  else:
   print "INFO: Not adjusting haproxy.cfg since it appears to have the sahara config already"
 
- print cmd(["systemctl", "start", "openstack-sahara-api.service"])
- print cmd(["systemctl", "start", "openstack-sahara-engine.service"])
  print cmd(["systemctl", "enable", "openstack-sahara-api.service"])
  print cmd(["systemctl", "enable", "openstack-sahara-engine.service"])
+ print cmd(["systemctl", "stop", "openstack-sahara-api.service"])
+ print cmd(["systemctl", "stop", "openstack-sahara-engine.service"])
+
+ try:
+  print cmd(["pcs", "resource", "create", "sahara-all", "systemd:openstack-sahara-all", "--clone"])
+  print cmd(["pcs", "constraint", "order", "start", "keystone-clone", "then", "sahara-all-clone"])
+ except:
+  print "pcs commands failed!"
+
 
 def cmd(args):
     return subprocess.check_output(args)
+
 
 def main():
  hostname = socket.gethostname()
