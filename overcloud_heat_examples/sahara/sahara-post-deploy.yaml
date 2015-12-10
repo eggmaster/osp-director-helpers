@@ -1,2 +1,2 @@
 resource_registry:
- OS::TripleO::NodeExtraConfigPost: /home/stack/templates/sahara-install.yaml
+ OS::TripleO::NodeExtraConfigPost: /home/stack/templates/sahara/sahara-install.yaml

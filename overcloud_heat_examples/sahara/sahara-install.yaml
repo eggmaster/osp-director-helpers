@@ -13,7 +13,7 @@ resources:
   type: OS::Heat::SoftwareConfig
   properties:
    group: script
-   config: {get_file: /home/stack/templates/sahara-install.py}
+   config: {get_file: /home/stack/templates/sahara/sahara-install.py}
 
  ExtraDeployments:
   type: OS::Heat::SoftwareDeployments
