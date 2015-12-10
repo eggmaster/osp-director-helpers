@@ -40,6 +40,10 @@ def install_sahara():
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "debug", "false"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rabbit_hosts", rabbit_host_ips])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rpc_backend", "rabbit"])
+ print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rabbit_use_ssl", "false"])
+ print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rabbit_userid", "guest"])
+ print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rabbit_password", "guest"])
+ print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rabbit_ha_queues", "true"])
 
 #test to see if haproxy.cfg has already been adjusted
 
