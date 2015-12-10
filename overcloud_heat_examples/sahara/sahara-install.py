@@ -11,6 +11,7 @@ def install_sahara():
  controller_0_ip = ""
  controller_1_ip = ""
  controller_2_ip = ""
+ rabbit_host_ips = "" #e.g. "x.x.x.x,y.y.y.y"
  
  print cmd(["yum", "-y", "install", "openstack-sahara-api", "openstack-sahara-engine"])
 
@@ -37,6 +38,8 @@ def install_sahara():
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "use_neutron", "true"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "verbose", "true"])
  print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "debug", "false"])
+ print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rabbit_hosts", rabbit_host_ips])
+ print cmd(["openstack-config", "--set", "/etc/sahara/sahara.conf", "DEFAULT", "rpc_backend", "rabbit"])
 
 #test to see if haproxy.cfg has already been adjusted
 
@@ -60,13 +63,29 @@ def install_sahara():
  else:
   print "INFO: Not adjusting haproxy.cfg since it appears to have the sahara config already"
 
+ no_firewall_rule = True
+ iptables_save_output = cmd(["iptables-save"])
+ for line in iptables_save_output:
+  if re.search('8386', line):
+   no_firewall_rule = False
 
- 
+ if no_firewall_rule:
+  print cmd(["iptables", "-A", "INPUT", "-p", "tcp", "-m", "multiport", "--dports", "8386", "-j", "ACCEPT"])
+  try:
+   iptables_config_file = open("/etc/sysconfig/iptables","w")
+   iptables_save_output = cmd(["iptables-save"])
+   for line in iptables_save_output:
+    iptables_config_file.write(line)
+   iptables_config_file.close()
+  except:
+   print "persisting iptables rules failed!"
+
  print cmd(["systemctl", "enable", "openstack-sahara-api.service"])
  print cmd(["systemctl", "enable", "openstack-sahara-engine.service"])
  print cmd(["systemctl", "stop", "openstack-sahara-api.service"])
  print cmd(["systemctl", "stop", "openstack-sahara-engine.service"])
 
+ #VERIFY: iiuc pcs will start up the sahara services following these commands
  try:
   print cmd(["pcs", "resource", "create", "sahara-all", "systemd:openstack-sahara-all", "--clone"])
   print cmd(["pcs", "constraint", "order", "start", "keystone-clone", "then", "sahara-all-clone"])
